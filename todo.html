@@ -10,9 +10,9 @@
         <form>
 
             <label for="archivo-input">Carga desde un archivo:</label>            
-            <button type="button" onclick="cargaDeArchivo()">Add</button>
+            <button type="button" class="botonAzul" onclick="cargaDeArchivo()">Add</button>
             
-            <br />
+            <br /><br /><br />
 
             <label for="todo-input">Add task:</label>
             <input type="text" id="todo-input" name="todo-input">
@@ -62,6 +62,7 @@
                     todoItem.innerText = todoList[i];
                     let deleteButton = document.createElement("button");
                     deleteButton.innerText = "Delete";
+                    deleteButton.classList.add("botonGris");
                     deleteButton.addEventListener("click", function() {
                         todoList.splice(i, 1);
                         renderTodoList();
@@ -69,6 +70,7 @@
                     });
                     let completeButton = document.createElement("button");
                     completeButton.innerText = "Complete";
+                    completeButton.classList.add("botonGris");
                     completeButton.addEventListener("click", function() {
                         completeTask(i);
                     });
@@ -177,6 +179,53 @@
         background-color: black;
         color: white;
     }
+
+    
+    .botonAzul {
+    display: inline;    
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    border-radius: 6px;
+    border: none;
+
+    color: #fff;
+    background: linear-gradient(180deg, #4B91F7 0%, #367AF6 100%);
+    background-origin: border-box;
+    box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    }
+
+    .botonAzul:focus {
+    box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+    outline: 0;
+    }
+    
+    .botonGris {
+    display: inline;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    border-radius: 6px;
+    border: none;
+
+    background: #6E6D70;
+    box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), inset 0px 0.5px 0.5px rgba(255, 255, 255, 0.5), 0px 0px 0px 0.5px rgba(0, 0, 0, 0.12);
+    color: #DFDEDF;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    }
+
+    .botonGris:focus {
+    box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1px rgba(0, 0, 0, 0.1), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+    outline: 0;
+    }
+
 </style>
 
 
