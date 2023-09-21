@@ -1,0 +1,184 @@
+<!-- un primer intento, asistido por AI, para un simple todo.txt -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>todo.txt</title>
+    </head>
+    <body>
+        <h1>Pending Items list</h1>
+        <form>
+
+            <label for="archivo-input">Carga desde un archivo:</label>            
+            <button type="button" onclick="cargaDeArchivo()">Add</button>
+            
+            <br />
+
+            <label for="todo-input">Add task:</label>
+            <input type="text" id="todo-input" name="todo-input">
+            <button type="button" onclick="addTodo()">Add</button>
+
+            <br /><br />
+
+                <label for="filter-input">Filter tasks:</label>
+                <input type="text" id="filter-input" name="filter-input" oninput="filterTasks()">
+
+
+        </form>
+        
+        <ul id="todo-list">
+            <!-- Todo items will be added here -->
+        </ul>
+        
+        <script>
+            // Initialize todo list with items from localStorage or empty array
+            let todoList = JSON.parse(localStorage.getItem("todoList")) || [];
+            let completedList = JSON.parse(localStorage.getItem("completedList")) || [];
+            
+            // Function to add a new todo item to the list
+            function addTodo() {
+                let todoInput = document.getElementById("todo-input");
+                let newTodo = todoInput.value.trim(); // Trim whitespace from input value
+                if (newTodo !== "") { // Check if input value is not empty
+                    todoList.push(newTodo);
+                    todoInput.value = "";
+                    renderTodoList();
+                    saveTodoList();
+                    todoInput.focus();
+                }
+            }
+
+            // Prevent form submission when enter key is pressed
+            document.querySelector('form').addEventListener('submit', function(event) {
+                event.preventDefault();
+            });
+
+            // Function to render the todo list
+            function renderTodoList() {
+                let todoListElement = document.getElementById("todo-list");
+                todoListElement.innerHTML = "";
+                for (let i = 0; i < todoList.length; i++) {
+                    let todoItem = document.createElement("li");
+                    todoItem.innerText = todoList[i];
+                    let deleteButton = document.createElement("button");
+                    deleteButton.innerText = "Delete";
+                    deleteButton.addEventListener("click", function() {
+                        todoList.splice(i, 1);
+                        renderTodoList();
+                        saveTodoList();                        
+                    });
+                    let completeButton = document.createElement("button");
+                    completeButton.innerText = "Complete";
+                    completeButton.addEventListener("click", function() {
+                        completeTask(i);
+                    });
+                    todoItem.appendChild(deleteButton);
+                    todoItem.appendChild(completeButton);
+                    todoListElement.appendChild(todoItem);
+                    
+                }
+                
+            }
+            
+
+            // Function to mark a task as complete          
+            function completeTask(index) {
+                // Add the completed task to the completed list
+                let completedTask = todoList[index];
+                completedList.push(completedTask);
+                localStorage.setItem("completedList", JSON.stringify(completedList));
+
+                // Remove the completed task from the todo list
+                todoList.splice(index, 1);
+                renderTodoList();
+                saveTodoList();
+            }
+
+            function renderCompletedList() {
+                let completedListElement = document.getElementById("completed-list");
+                completedListElement.innerHTML = "";
+                for (let i = 0; i < completedList.length; i++) {
+                    let completedItem = document.createElement("li");
+                    completedItem.innerText = completedList[i];
+                    completedListElement.appendChild(completedItem);
+                }
+            }
+
+            // Load completed list from localStorage (if available)
+            //completedList = JSON.parse(localStorage.getItem("completedList")) || [];
+            //renderCompletedList();
+
+            function filterTasks() {
+                let filterInput = document.getElementById("filter-input");
+                let filterText = filterInput.value.toLowerCase();
+                let todoListElement = document.getElementById("todo-list");
+                let todoItems = todoListElement.getElementsByTagName("li");
+                for (let i = 0; i < todoItems.length; i++) {
+                    let todoItemText = todoItems[i].innerText.toLowerCase();
+                    if (todoItemText.includes(filterText)) {
+                        todoItems[i].style.display = "block";
+                    } else {
+                        todoItems[i].style.display = "none";
+                    }
+                }
+            }
+            
+            // Load todo list from localStorage (if available)
+            todoList = JSON.parse(localStorage.getItem("todoList")) || [];
+            renderTodoList();
+
+            function saveTodoList() {
+                localStorage.setItem("todoList", JSON.stringify(todoList));
+            }
+
+
+
+
+                // eliminar elementos duplicados    
+                // pensar si realmente quiero que se modifique el txt desde aquí o sólo será visualizador.
+                // x un boton para cargar elementos de archivo
+                // x funcion para completar elementos de la lista
+                // x regresa el foco al input después de añadir un elemento
+                // x impedir que añadas elementos vacíos
+                // x confirmar que esté guardado localmente
+                // x checar por qué al dar enter se hace un bug
+                // x función para filtrar lo escrito en el input
+
+            
+        function cargaDeArchivo() {
+            let fileInput = document.createElement("input");
+                fileInput.type = "file";
+                fileInput.accept = ".txt";
+                fileInput.addEventListener("change", function() {
+                    let file = fileInput.files[0];
+                    let reader = new FileReader();
+                    reader.onload = function() {
+                        let fileContent = reader.result;
+                        let tasks = fileContent.split("\n");
+                        for (let i = 0; i < tasks.length; i++) {
+                            let task = tasks[i].trim();
+                            if (task !== "") {
+                                todoList.push(task);
+                            }
+                        }
+                        renderTodoList();
+                        saveTodoList();
+                    };
+                    reader.readAsText(file);
+                });
+                fileInput.click();
+            }            
+        
+        </script>
+
+
+<style>
+    body {
+        background-color: black;
+        color: white;
+    }
+</style>
+
+
+    </body>
+</html>
